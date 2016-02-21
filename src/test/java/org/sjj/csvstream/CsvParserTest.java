@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +23,49 @@ public class CsvParserTest {
             String[] e = expected.get(i);
             Assert.assertArrayEquals(e, a);
         }
+    }
+
+    @Test
+    public void testSplit() {
+        String s = "one,two,three";
+        String[] fields = CsvParser.split(s);
+        Assert.assertArrayEquals(new String[]{"one","two","three"}, fields);
+    }
+
+    @Test
+    public void testSplitLines() {
+        String input = "First,Last,Age\nBob,Smith,44\nJane,Doe,40";
+        StringReader reader = new StringReader(input);
+        Stream<String[]> records = CsvParser.defaultParser(reader).splitLines();
+        int sum = records.mapToInt(record -> record.length).sum();
+        Assert.assertEquals(6, sum);
+    }
+
+    @Test
+    public void testCustomizedParser() {
+        String input = "First|Last|Age\nBob|Smith|44\nJane|Doe|40";
+        StringReader reader = new StringReader(input);
+        CsvParser parser = new CsvParser(CsvConfig.DEFAULTS.withDelimiter('|'), reader);
+        Stream<String[]> records = parser.splitLines();
+        int sum = records.mapToInt(record -> record.length).sum();
+        Assert.assertEquals(6, sum);
+    }
+
+    @Test
+    public void testMappify() {
+        String input = "First,Last,Age\nBob,Smith,44\nJane,Doe,40";
+        StringReader reader = new StringReader(input);
+        Stream<Map<String, String>> stream = CsvParser.defaultParser(reader).mappify();
+        stream.forEach(System.out::println);
+
+    }
+
+    @Test
+    public void testGetDefault() {
+        String s = "one,two,three";
+        CsvParser p = CsvParser.defaultParser(new StringReader(s));
+        Stream<String[]> records = p.splitLines();
+
     }
 
     @Test
