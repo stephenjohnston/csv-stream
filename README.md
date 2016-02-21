@@ -9,7 +9,8 @@ csv-stream is a CSV parsing and formatting library with the following design goa
 
 If you find any areas in which the above design goals were not met, please create an issue.  Pull-requests for any fixes or improvements are welcome and will receive consideration.
 
-Following are some usage examples.
+Usage examples
+--------------
 
 Parse a string into tokens:
 ```java
