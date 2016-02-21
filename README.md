@@ -43,7 +43,7 @@ If you would rather have a stream containing Map<String, String> instead of Stri
     // Output: {First=Bob, Last=Smith, Age=44}
     //         {First=Jane, Last=Doe, Age=40}
 ```
-For further usage example, see the test suite.
+For further usage examples, see the test suite.
 
 
 License
