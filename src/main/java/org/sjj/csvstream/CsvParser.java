@@ -116,7 +116,7 @@ public class CsvParser {
             sb.append((char)ch);
             ch = iter.nextInt();
         }
-        fields.add(sb.toString());
+        fields.add(sb.toString().trim());
         return ch;
     }
 
@@ -127,7 +127,7 @@ public class CsvParser {
             sb.append((char)ch);
             ch = iter.nextInt();
         }
-        fields.add(sb.toString());
+        fields.add(sb.toString().trim());
         return ch;//(ch != -1 && !isNewline(ch));
     }
 

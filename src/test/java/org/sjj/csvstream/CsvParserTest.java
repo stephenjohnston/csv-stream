@@ -113,7 +113,7 @@ public class CsvParserTest {
     @Test
     public void testQuotedStrings3() {
         String input = "Dividend, String, Static,,\"This is a test\"";
-        String[] ary = new String[]{"Dividend", " String", " Static", "", "This is a test"};
+        String[] ary = new String[]{"Dividend", "String", "Static", "", "This is a test"};
         List<String[]> expected = new ArrayList<>();
         expected.add(ary);
 
