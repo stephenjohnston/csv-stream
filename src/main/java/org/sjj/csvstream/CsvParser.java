@@ -99,7 +99,7 @@ public class CsvParser {
         while (ch != -1) {
             if (ch == quote) {
                 ch = iter.nextInt();
-                if (ch == delim || isNewline(ch)) {
+                if (ch == delim || isNewline(ch) || !iter.hasNext()) {
                     // we found the end of the field.
                     break;
                 }
