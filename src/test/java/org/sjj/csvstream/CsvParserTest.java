@@ -197,6 +197,30 @@ public class CsvParserTest {
     }
 
     @Test
+    public void getHeaderTestBadDataLine() {
+        String[] expectedHeader = {"name", "age", "phone"};
+        String[][] expectedData = {{"Steve", "40", "555"}, {"Colin", "42"}};
+        String input = "name,age,phone\nSteve,40,555\nColin,42";
+
+        CsvParser parser = new CsvParser(CsvConfig.DEFAULTS,
+                new StringReader(input));
+
+        Stream<Map<String, String>> mapStream = parser.mappify();
+        String[] actual = parser.getHeaderFields();
+        Assert.assertArrayEquals(expectedHeader, actual);
+
+        Object[] results = mapStream.toArray();
+        Map<String, String> row1 = (Map<String, String>)results[0];
+        Map<String, String> row2 = (Map<String, String>)results[1];
+
+        Assert.assertEquals(expectedData[0][0], row1.get("name"));
+        Assert.assertEquals(expectedData[0][1], row1.get("age"));
+        Assert.assertEquals(expectedData[0][2], row1.get("phone"));
+        Assert.assertEquals(expectedData[1][0], row2.get("name"));
+        Assert.assertEquals(expectedData[1][1], row2.get("age"));
+    }
+
+    @Test
     public void getHeaderWithCommentsTest() {
         String[] expectedHeader = {"name", "age", "phone"};
         String[][] expectedData = {{"Steve", "40", "555"}, {"Jim", "42", "995"}};

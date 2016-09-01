@@ -171,7 +171,7 @@ public class CsvParser {
         for (int i = 0; i < header.length; i++) {
             // If the data line doesn't contain enough fields or doesn't match the header length,
             // we are going to do our best to fill out a map that contains the entries that it does have.
-            if (i > values.length) {
+            if (i >= values.length) {
                 break;
             }
             map.put(header[i], values[i]);
