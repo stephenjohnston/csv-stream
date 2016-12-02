@@ -26,6 +26,13 @@ public class CsvParserTest {
     }
 
     @Test
+    public void testSplitCommaQuote() {
+       String [] parts = org.sjj.csvstream.CsvParser.split("UDS,\"U,D\"");
+        for (int i = 0; i < parts.length; i++)
+            System.out.println(i + " " + parts[i]);
+    }
+
+    @Test
     public void testSplit() {
         String s = "one,two,three";
         String[] fields = CsvParser.split(s);

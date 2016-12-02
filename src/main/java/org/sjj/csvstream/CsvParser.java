@@ -76,7 +76,7 @@ public class CsvParser {
             return (ch == LF_CHAR && iter.getPrevInt() == CR_CHAR);
     }
 
-    Stream<String[]> splitLines() {
+    public Stream<String[]> splitLines() {
         return StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(new Iterator<String[]>() {
                     @Override
