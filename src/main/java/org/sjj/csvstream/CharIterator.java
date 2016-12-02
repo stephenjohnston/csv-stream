@@ -57,4 +57,12 @@ public class CharIterator implements PrimitiveIterator.OfInt {
     public int getPrevInt() {
         return prevInt;
     }
+
+    public int peekNext() {
+        int ret_val = nextInt();
+        if (position > 0) {
+            position--;
+        }
+        return ret_val;
+    }
 }

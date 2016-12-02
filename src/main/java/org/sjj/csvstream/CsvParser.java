@@ -3,6 +3,8 @@ package org.sjj.csvstream;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -65,15 +68,26 @@ public class CsvParser {
     }
 
     private boolean isNewline(int ch) {
-        NewLineType nlt = NewLineType.LF;
-        if (nlt == NewLineType.LF)
-            return ch == LF_CHAR;
-        else if (nlt == NewLineType.CR)
-            return ch == CR_CHAR;
-        else if (nlt == NewLineType.CRLF)
-            return (ch == CR_CHAR && iter.getPrevInt() == LF_CHAR);
-        else
-            return (ch == LF_CHAR && iter.getPrevInt() == CR_CHAR);
+        if (ch == LF_CHAR || ch == CR_CHAR) {
+            if (iter.hasNext()) {
+                int nextCharPeek = iter.peekNext();
+                if (nextCharPeek == LF_CHAR || nextCharPeek == CR_CHAR) {
+                    iter.nextInt(); // consume the CR or CF from the stream.
+                }
+            }
+            return true;
+        }
+        return false;
+//
+//        NewLineType nlt = NewLineType.LF;
+//        if (nlt == NewLineType.LF)
+//            return ch == LF_CHAR;
+//        else if (nlt == NewLineType.CR)
+//            return ch == CR_CHAR;
+//        else if (nlt == NewLineType.CRLF)
+//            return (ch == CR_CHAR && iter.getPrevInt() == LF_CHAR);
+//        else
+//            return (ch == LF_CHAR && iter.getPrevInt() == CR_CHAR);
     }
 
     public Stream<String[]> splitLines() {
@@ -200,17 +214,22 @@ public class CsvParser {
 
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        FileReader reader = new FileReader("/Users/stephen/Downloads/worldcitiespop.txt");
-        CsvParser p2 = new CsvParser(CsvConfig.DEFAULTS, reader);
+        String fileName = "/Users/stephen/removed.csv";
 
-        int num = 0;
-        String[] s;
-        while ((s = p2.split()) != null) {
-            num += s.length;
-        }
-        long end = System.currentTimeMillis();
-        System.out.println(num);
-        System.out.println(end - start + "ms");
+
+        Map<String, List<String[]>> data =
+                Files.readAllLines(Paths.get(fileName))
+                        .stream()
+                        .skip(1)
+                        .map(l -> CsvParser.split(l))
+                        .collect(Collectors.groupingBy(l -> l[0]));
+
+        System.out.println(data.size());
+
+        data = CsvParser.defaultParser(new FileReader(fileName))
+                .splitLines()
+                .collect(Collectors.groupingBy(l -> l[0]));
+        System.out.println(data.size());
     }
 
 }
