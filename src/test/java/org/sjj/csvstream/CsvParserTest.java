@@ -149,6 +149,15 @@ public class CsvParserTest {
     }
 
     @Test
+    public void testSplitWithCommentCharInField() {
+        String input = "one,#N/A,two,three";
+        String[] expected = new String[]{"one", "#N/A", "two", "three"};
+        String[] actual = CsvParser.split(input);
+
+        Assert.assertArrayEquals(expected, actual);
+    }
+
+    @Test
     public void testWithQuotedNewline() {
 
         String input = "one,two,three\nfour,five,\"six\nseven\"\neight,nine,ten";

@@ -26,6 +26,7 @@ public class CsvParser {
     private final char            quote;
     private final char            delim;
     private final char            comment;
+    private final boolean         enableComments;
     private final List<String>    fields = new ArrayList<>();
     private final StringBuilder   sb = new StringBuilder();
     private final String[]        headerFields;
@@ -43,6 +44,7 @@ public class CsvParser {
         this.quote = config.getQuote();
         this.delim = config.getDelimiter();
         this.comment = config.getComment();
+        this.enableComments = config.getCommentsEnabled();
 
         if (config.isHeaderFlag()) {
             // If the user configuration is setup to read in a header,
@@ -163,7 +165,7 @@ public class CsvParser {
         boolean moreFields = true;
         while (moreFields) {
             int ch = iter.nextInt();
-            if (ch == comment) {
+            if (enableComments && ch == comment) {
                 consumeComment();
             } else if (ch == quote) {
                 ch = parseQuotedField();
@@ -203,7 +205,7 @@ public class CsvParser {
     }
 
     public static String[] split(String s) {
-        CsvParser p = new CsvParser(CsvConfig.DEFAULTS.withHeaderFlag(false), new StringReader(s));
+        CsvParser p = new CsvParser(CsvConfig.DEFAULTS.withHeaderFlag(false).withCommentsEnabled(false), new StringReader(s));
         return p.split();
     }
 

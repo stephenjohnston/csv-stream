@@ -24,20 +24,23 @@ public class CsvConfig {
     static final char               DEFAULT_COMMENT = '#';
     static final char               DEFAULT_QUOTE = '"';
     static final boolean            DEFAULT_HEADER_FLAG = true;
+    static final boolean            DEFAULT_COMMENT_ENABLED = true;
 
     public static final CsvConfig DEFAULTS =
             new CsvConfig(
                     DEFAULT_HEADER_FLAG,
                     DEFAULT_DELIMITER,
                     DEFAULT_COMMENT,
-                    DEFAULT_QUOTE);
+                    DEFAULT_QUOTE,
+                    DEFAULT_COMMENT_ENABLED);
 
     public static final CsvConfig DEFAULTS_WITHOUT_HEADER =
             new CsvConfig(
                     !DEFAULT_HEADER_FLAG,
                     DEFAULT_DELIMITER,
                     DEFAULT_COMMENT,
-                    DEFAULT_QUOTE);
+                    DEFAULT_QUOTE,
+                    DEFAULT_COMMENT_ENABLED);
 
 
     // Private bits
@@ -45,12 +48,13 @@ public class CsvConfig {
     private final char               delimiter;
     private final char               comment;
     private final char               quote;
-
-    public CsvConfig(boolean headerFlag, char delimiter, char comment, char quote) {
+    private final boolean            commentsEnabled;
+    public CsvConfig(boolean headerFlag, char delimiter, char comment, char quote, boolean commentsEnabled) {
         this.headerFlag = headerFlag;
         this.delimiter = delimiter;
         this.comment = comment;
         this.quote = quote;
+        this.commentsEnabled = commentsEnabled;
     }
 
     public final boolean isHeaderFlag() {
@@ -69,19 +73,25 @@ public class CsvConfig {
         return quote;
     }
 
+    public final boolean getCommentsEnabled() { return commentsEnabled; }
+
     public final CsvConfig withDelimiter(char delimiter) {
-        return new CsvConfig(this.headerFlag, delimiter, this.comment, this.quote);
+        return new CsvConfig(this.headerFlag, delimiter, this.comment, this.quote, this.commentsEnabled);
     }
 
     public final CsvConfig withComment(char comment) {
-        return new CsvConfig(this.headerFlag, this.delimiter, comment, this.quote);
+        return new CsvConfig(this.headerFlag, this.delimiter, comment, this.quote, this.commentsEnabled);
     }
 
     public final CsvConfig withQuote(char quote) {
-        return new CsvConfig(this.headerFlag, this.delimiter, this.comment, quote);
+        return new CsvConfig(this.headerFlag, this.delimiter, this.comment, quote, this.commentsEnabled);
+    }
+
+    public final CsvConfig withCommentsEnabled(boolean enabled) {
+        return new CsvConfig(this.headerFlag, this.delimiter, this.comment, quote, enabled);
     }
 
     public final CsvConfig withHeaderFlag(boolean headerFlag) {
-        return new CsvConfig(headerFlag, this.delimiter, this.comment, this.quote);
+        return new CsvConfig(headerFlag, this.delimiter, this.comment, this.quote, this.commentsEnabled);
     }
 }
