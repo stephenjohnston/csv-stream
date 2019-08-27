@@ -118,8 +118,7 @@ public class CsvParser {
                 if (ch == delim || isNewline(ch) || !iter.hasNext()) {
                     // we found the end of the field.
                     break;
-                }
-                else if (ch == quote) {
+                } else if (ch == quote) {
                     // quote quote seen together, so this isn't the end of the field.
                     sb.append(quote);
                     ch = iter.nextInt();
@@ -205,8 +204,12 @@ public class CsvParser {
     }
 
     public static String[] split(String s) {
-        CsvParser p = new CsvParser(CsvConfig.DEFAULTS.withHeaderFlag(false).withCommentsEnabled(false), new StringReader(s));
-        return p.split();
+        return split(s, CsvConfig.DEFAULT_DELIMITER);
+    }
+
+    public static String[] split(String s, char delimiter) {
+        CsvConfig config = new CsvConfig(false, delimiter, CsvConfig.DEFAULT_COMMENT, CsvConfig.DEFAULT_QUOTE, false);
+        return split(config, s);
     }
 
     public static String[] split(CsvConfig config, String s) {

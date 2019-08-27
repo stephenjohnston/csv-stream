@@ -11,17 +11,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 public class CsvParserTest {
 
     private void checkResultWithoutHeader(String input, List<String[]> expected) {
         CsvConfig config = CsvConfig.DEFAULTS_WITHOUT_HEADER;
         CsvParser parser = new CsvParser(config, new StringReader(input));
         List<String[]> actual = parser.splitLines().collect(Collectors.toList());
-        Assert.assertEquals(expected.size(), actual.size());
+        assertEquals(expected.size(), actual.size());
         for (int i = 0; i < expected.size(); i++) {
             String[] a = actual.get(i);
             String[] e = expected.get(i);
-            Assert.assertArrayEquals(e, a);
+            assertArrayEquals(e, a);
         }
     }
 
@@ -36,7 +39,17 @@ public class CsvParserTest {
     public void testSplit() {
         String s = "one,two,three";
         String[] fields = CsvParser.split(s);
-        Assert.assertArrayEquals(new String[]{"one","two","three"}, fields);
+        assertArrayEquals(new String[]{"one","two","three"}, fields);
+    }
+
+    @Test
+    public void testCustomizedDelimiter() {
+        String input = "one|#N/A|two|three|\"four1 | four2\"|five";
+        String[] expected = new String[]{"one", "#N/A", "two", "three", "four1 | four2", "five"};
+        String[] actual = CsvParser.split(input, '|');
+
+        assertEquals(1, CsvParser.split(input).length);
+        assertArrayEquals(expected, actual);
     }
 
     @Test
@@ -45,7 +58,7 @@ public class CsvParserTest {
         StringReader reader = new StringReader(input);
         Stream<String[]> records = CsvParser.defaultParser(reader).splitLines();
         int sum = records.mapToInt(record -> record.length).sum();
-        Assert.assertEquals(6, sum);
+        assertEquals(6, sum);
     }
 
     @Test
@@ -55,7 +68,7 @@ public class CsvParserTest {
         CsvParser parser = new CsvParser(CsvConfig.DEFAULTS.withDelimiter('|'), reader);
         Stream<String[]> records = parser.splitLines();
         int sum = records.mapToInt(record -> record.length).sum();
-        Assert.assertEquals(6, sum);
+        assertEquals(6, sum);
     }
 
     @Test
@@ -64,7 +77,6 @@ public class CsvParserTest {
         StringReader reader = new StringReader(input);
         Stream<Map<String, String>> stream = CsvParser.defaultParser(reader).mappify();
         stream.forEach(System.out::println);
-
     }
 
     @Test
@@ -154,7 +166,7 @@ public class CsvParserTest {
         String[] expected = new String[]{"one", "#N/A", "two", "three"};
         String[] actual = CsvParser.split(input);
 
-        Assert.assertArrayEquals(expected, actual);
+        assertArrayEquals(expected, actual);
     }
 
     @Test
@@ -198,10 +210,10 @@ public class CsvParserTest {
 
         Stream<String[]> lines = parser.splitLines();
         String[] actual = parser.getHeaderFields();
-        Assert.assertArrayEquals(expectedHeader, actual);
+        assertArrayEquals(expectedHeader, actual);
 
         String[][] actual2 = lines.collect(Collectors.toList()).toArray(new String[0][0]);
-        Assert.assertArrayEquals(expectedData, actual2);
+        assertArrayEquals(expectedData, actual2);
     }
 
     @Test
@@ -223,17 +235,17 @@ public class CsvParserTest {
 
         Stream<Map<String, String>> mapStream = parser.mappify();
         String[] actual = parser.getHeaderFields();
-        Assert.assertArrayEquals(expectedHeader, actual);
+        assertArrayEquals(expectedHeader, actual);
 
         Object[] results = mapStream.toArray();
         Map<String, String> row1 = (Map<String, String>)results[0];
         Map<String, String> row2 = (Map<String, String>)results[1];
 
-        Assert.assertEquals(expectedData[0][0], row1.get("name"));
-        Assert.assertEquals(expectedData[0][1], row1.get("age"));
-        Assert.assertEquals(expectedData[0][2], row1.get("phone"));
-        Assert.assertEquals(expectedData[1][0], row2.get("name"));
-        Assert.assertEquals(expectedData[1][1], row2.get("age"));
+        assertEquals(expectedData[0][0], row1.get("name"));
+        assertEquals(expectedData[0][1], row1.get("age"));
+        assertEquals(expectedData[0][2], row1.get("phone"));
+        assertEquals(expectedData[1][0], row2.get("name"));
+        assertEquals(expectedData[1][1], row2.get("age"));
     }
 
     @Test
